@@ -93,6 +93,53 @@ local function SetValueVR(this, v, just)
     this:SetPoint(just or "CENTER", CoolLine, "BOTTOM", 0, db.h - v)
 end
 
+-- Cooldowns to hide - Memø 02/02/2023
+local hideIds = {
+    6948, --"Hearthstone"
+    46705, --"Honorless Target",
+    32727, --"Arena Preparation",
+    32728, --"Arena Preparation",
+    33795, --"Strength of the Halaani",
+    57940, --"Essence of Wintergrasp",
+    67759, --"Shard of Flame"
+    44521, --"Preparation"
+--[[     --procs - keep powerful ones
+    67750, -- "Energized", -- solace
+    72416, -- Frostforged Sage,  ICC caster ring
+    50402, -- Frostforged Champion, ICC melee ring
+    55637, --"Lightweave", -- tailor back
+    59626, -- Black Magic ]]
+    --Priest
+    47515, -- "Divine Aegis",
+    63944, -- "Renewed Hope",
+    15363, -- "Inspiration",
+    45244, -- "Focused Will",
+    52800, -- "Borrowed Time",
+    --Mage
+    57669, --"Replenishment",
+    --Lock
+    47891, --"Shadow Ward",
+    48018, --"Demonic Circle: Summon",
+    57567, --"Fel Intelligence",
+    --"Soul Link", -- keep it ?
+    47260, --"Backdraft", -- same ?
+    --"Backlash",
+    --"Nether Protection",
+    47197, --"Eradication",
+    --"Shadow Trance",
+    --Druid
+    71184, --"Soothing", -- rdruid idol
+    16246, --"Clearcasting",
+    48412, --"Master Shapeshifter",
+    33883, --"Natural Perfection",
+    --Hunt
+    61847, --"Aspect of the Dragonhawk",
+    19506, --"Trueshot Aura",
+    52858, --"Culling the Herd",
+    --Pal
+    32223, --"Crusader Aura"
+}
+
 --------------------------------
 -- For 3rd party addons such as ElvUI
 function CoolLine:SetConfig(w, h, x, y, font, fontsize, inactivealpha, activealpha, statusbar, updateOption)
@@ -154,7 +201,50 @@ function CoolLine:ADDON_LOADED(a1)
                               inactivealpha = 0.5,
                               activealpha   = 1.0,
                               block         = {  -- [spell or item name] = true,
-                                  [GetItemInfo(6948) or "Hearthstone"] = true, -- Hearthstone
+                                  --[GetItemInfo(6948) or "Hearthstone"] = true, -- Hearthstone
+--[[                                 -- Adding cooldowns to hide - Memø 02022023
+                                [GetSpellInfo(46705) or "Honorless Target"] = true, --"Honorless Target",
+                                [GetSpellInfo(32727) or "Arena Preparation"] = true, --"Arena Preparation",
+                                [GetSpellInfo(32728) or "Arena Preparation"] = true, --"Arena Preparation",
+                                [GetSpellInfo(33795) or "Strength of the Halaani"] = true, --"Strength of the Halaani",
+                                [GetSpellInfo(57940) or "Essence of Wintergrasp"] = true, --"Essence of Wintergrasp",
+                                [GetSpellInfo(67759) or "Shard of Flame"] = true, --"Shard of Flame"
+                                [GetSpellInfo(44521) or "Preparation"] = true, --"Preparation"
+                                --procs - keep powerful ones
+                                [GetSpellInfo(67750) or "Energized"] = true, -- "Energized", -- solace
+                                [GetSpellInfo(72416) or "Frostforged Sage"] = true, -- Frostforged Sage,  ICC caster ring
+                                [GetSpellInfo(50402) or "Frostforged Champion"] = true, -- Frostforged Champion, ICC melee ring
+                                [GetSpellInfo(55637) or "Lightweave"] = true, --"Lightweave", -- tailor back
+                                [GetSpellInfo(59626) or "Black Magic"] = true, -- Black Magic
+                                --Priest
+                                [GetSpellInfo(47515) or "Divine Aegis"] = true, -- "Divine Aegis",
+                                [GetSpellInfo(63944) or "Renewed Hope"] = true, -- "Renewed Hope",
+                                [GetSpellInfo(15363) or "Inspiration"] = true, -- "Inspiration",
+                                [GetSpellInfo(45244) or "Focused Will"] = true, -- "Focused Will",
+                                [GetSpellInfo(52800) or "Borrowed Time"] = true, -- "Borrowed Time",
+                                --Mage
+                                [GetSpellInfo(57669) or "Replenishment"] = true, --"Replenishment",
+                                --Lock
+                                [GetSpellInfo(47891) or "Shadow Ward"] = true, --"Shadow Ward",
+                                [GetSpellInfo(48018) or "Demonic Circle: Summon"] = true, --"Demonic Circle: Summon",
+                                [GetSpellInfo(57567) or "Fel Intelligence"] = true, --"Fel Intelligence",
+                                --"Soul Link", -- keep it ?
+                                [GetSpellInfo(47260) or "Backdraft"] = true, --"Backdraft", -- same ?
+                                --"Backlash",
+                                --"Nether Protection",
+                                [GetSpellInfo(47197) or "Eradication"] = true, --"Eradication",
+                                --"Shadow Trance",
+                                --Druid
+                                [GetSpellInfo(71184) or "Soothing"] = true, --"Soothing", -- rdruid idol
+                                [GetSpellInfo(16246) or "Clearcasting"] = true, --"Clearcasting",
+                                [GetSpellInfo(48412) or "Master Shapeshifter"] = true, --"Master Shapeshifter",
+                                [GetSpellInfo(33883) or "Natural Perfection"] = true, --"Natural Perfection",
+                                --Hunt
+                                [GetSpellInfo(61847) or "Aspect of the Dragonhawk"] = true, --"Aspect of the Dragonhawk",
+                                [GetSpellInfo(19506) or "Trueshot Aura"] = true, --"Trueshot Aura",
+                                [GetSpellInfo(52858) or "Culling the Herd"] = true, --"Culling the Herd",
+                                --Pal
+                                [GetSpellInfo(32223) or "Crusader Aura"] = true, --"Crusader Aura"  ]]
                               },
                           }) do
             db[k] = (db[k] ~= nil and db[k]) or v
@@ -482,7 +572,7 @@ end
 local function NewCooldown(name, icon, endtime, isplayer)
     local f
     for index, frame in pairs(cooldowns) do
-        if frame.name == name and frame.isplayer == isplayer then
+          if frame.name == name and frame.isplayer == isplayer then
             f = frame
             break
         elseif frame.endtime == endtime then
@@ -601,7 +691,7 @@ do
     local function CheckSpellBook(btype)
         for id, name in pairs(spells[btype]) do
             local start, duration, enable = GetSpellCooldown(name)
-            if enable == 1 and start > 0 and not block[name] and (not RuneCheck or RuneCheck(name, duration)) then
+            if enable == 1 and start > 0 and not table_contains(hideIds, id) and (not RuneCheck or RuneCheck(name, duration)) then --table_contains(hideIds, name)
                 if duration > 2.5 then
                     local _, _, texture = GetSpellInfo(id)
                     NewCooldown(name, texture, start + duration, btype == BOOKTYPE_SPELL)
@@ -623,7 +713,7 @@ do
 
         for id, name in pairs(chargespells[btype]) do
             local currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(id)
-            if cooldownStart and cooldownDuration and currentCharges < maxCharges and not block[name] then
+            if cooldownStart and cooldownDuration and currentCharges < maxCharges and not table_contains(hideIds, id) then --table_contains(hideIds, name)
                 local _, _, texture = GetSpellInfo(id)
                 NewCooldown(name, texture, cooldownStart + cooldownDuration, btype == BOOKTYPE_SPELL)
             else
@@ -662,6 +752,23 @@ do
     local GetContainerItemCooldown, GetContainerItemInfo    = C_Container and C_Container.GetContainerItemCooldown, C_Container and C_Container.GetContainerItemInfo -- prior to 3.4.1 : GetContainerItemCooldown, GetContainerItemInfo
     local GetContainerNumSlots                              = C_Container and C_Container.GetContainerNumSlots or _G.GetContainerNumSlots -- prior to 3.4.1 :GetContainerNumSlots
     local GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or _G.GetContainerItemLink -- new in 3.4.1
+    local GetContainerItemID = C_Container and C_Container.GetContainerItemID
+
+    function table_contains(tbl, x)
+        found = false
+        for _, v in pairs(tbl) do
+            if v == x then 
+                found = true 
+            end
+        end
+        return found
+    end
+    
+    function splitStringBySpace(s)
+        for word in string.gmatch(s, "%S+") do
+            return word
+        end
+    end
 
     ---------------------------------------
     function CoolLine:BAG_UPDATE_COOLDOWN()
@@ -670,9 +777,15 @@ do
             local start, duration, enable = GetInventoryItemCooldown("player", i)
             if enable == 1 then
                 local name = GetItemInfo(GetInventoryItemLink("player", i))
-                if start > 0 and not block[name] then
+                local itemID = GetInventoryItemID("player", i)
+                if start > 0 and not table_contains(hideIds, itemID) then
                     if duration > 3 and duration < 3601 then
-                        NewCooldown(name, GetInventoryItemTexture("player", i), start + duration)
+                       -- Checking by names, if item in cooldown is unequipped, so we can show the icon texture of the new equipped item - Memø 03022023    
+                        if name ~= GetItemInfo(GetInventoryItemLink("player", i)) then
+                            NewCooldown(name, GetInventoryItemTexture("player", i), start + duration)
+                        else 
+                            ClearCooldown(nil, name)
+                        end
                     end
                 else
                     ClearCooldown(nil, name)
@@ -685,9 +798,12 @@ do
                 local start, duration, enable = GetContainerItemCooldown(i, j)
                 if enable == 1 then
                     local name = GetItemInfo(GetContainerItemLink(i, j))
-                    if start > 0 and not block[name] then
+                    local itemID = GetContainerItemID(i, j)
+                    if start > 0 and not table_contains(hideIds, itemID) then
                         if duration > 3 and duration < 3601 then
-                            NewCooldown(name, GetContainerItemInfo(i, j), start + duration)
+                            -- GetContainerItemInfo doesn't find the right item in bags, so we're getting it by his name - Memø 03022023 
+                            local textureByName = splitStringBySpace(select(5, GetItemInfoInstant(name))) 
+                            NewCooldown(name, textureByName, start + duration) --GetContainerItemInfo(i, j)
                         end
                     else
                         ClearCooldown(nil, name)
@@ -711,7 +827,7 @@ function CoolLine:PET_BAR_UPDATE_COOLDOWN()
                 name, _, texture = GetPetActionInfo(i)
             end
             if name then
-                if start > 0 and not block[name] then
+                if start > 0 and not table_contains(hideIds, name) then
                     if duration > 3 then
                         NewCooldown(name, texture, start + duration)
                     end
@@ -806,7 +922,6 @@ function CoolLine:UNIT_SPELLCAST_FAILED(unit, spell, id8)
                         this:SetAlpha(this.alp > 1 and 1 or this.alp)
                     end)
                 end
-
                 failborder.alp = 1.2
                 failborder:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2)
                 failborder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2)
