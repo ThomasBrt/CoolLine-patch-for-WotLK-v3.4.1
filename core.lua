@@ -570,6 +570,8 @@ local function OnUpdate(this, a1, ctime, dofl)
 end
 
 local function NewCooldown(name, icon, endtime, isplayer)
+
+
     local f
     for index, frame in pairs(cooldowns) do
           if frame.name == name and frame.isplayer == isplayer then
@@ -770,6 +772,19 @@ do
         end
     end
 
+    function FindContainerItemByName(search)
+        local found = search
+        for bag = 0,4 do
+          for slot = 1,GetContainerNumSlots(bag) do
+            local item = GetContainerItemLink(bag,slot)
+            if item and item:find(search) then
+                found = GetItemInfo(GetContainerItemLink(bag, slot))
+            end
+          end
+        end
+        return found
+      end
+
     ---------------------------------------
     function CoolLine:BAG_UPDATE_COOLDOWN()
         ---------------------------------------
@@ -780,11 +795,12 @@ do
                 local itemID = GetInventoryItemID("player", i)
                 if start > 0 and not table_contains(hideIds, itemID) then
                     if duration > 3 and duration < 3601 then
+                        local textureByName = splitStringBySpace(select(5, GetItemInfoInstant(name)))
                        -- Checking by names, if item in cooldown is unequipped, so we can show the icon texture of the new equipped item - Memø 03022023    
-                        if name ~= GetItemInfo(GetInventoryItemLink("player", i)) then
-                            NewCooldown(name, GetInventoryItemTexture("player", i), start + duration)
+                        if name ~= FindContainerItemByName(name) then
+                            ClearCooldown(nil, FindContainerItemByName(name))
                         else 
-                            ClearCooldown(nil, name)
+                            NewCooldown(name, textureByName, start + duration) --GetInventoryItemTexture("player", i)
                         end
                     end
                 else
@@ -801,9 +817,18 @@ do
                     local itemID = GetContainerItemID(i, j)
                     if start > 0 and not table_contains(hideIds, itemID) then
                         if duration > 3 and duration < 3601 then
-                            -- GetContainerItemInfo doesn't find the right item in bags, so we're getting it by his name - Memø 03022023 
-                            local textureByName = splitStringBySpace(select(5, GetItemInfoInstant(name))) 
-                            NewCooldown(name, textureByName, start + duration) --GetContainerItemInfo(i, j)
+--[[                             print("nom sac : " .. name)
+                            local slotItemId = C_Item.GetItemInventoryTypeByID(itemID)
+                            local nameItemEquipped = GetItemInfo(GetInventoryItemLink("player", slotItemId))
+                            print("nom equipe : " .. nameItemEquipped)
+                            print(cooldowns) ]]
+                            if name ~= nameItemEquipped then
+                                -- GetContainerItemInfo doesn't find the right item in bags, so we're getting it by his name - Memø 03022023 
+                                local textureByName = splitStringBySpace(select(5, GetItemInfoInstant(name))) 
+                                NewCooldown(name, textureByName, start + duration) --GetContainerItemInfo(i, j)
+                            else
+                                ClearCooldown(nil, nameItemEquipped)
+                            end
                         end
                     else
                         ClearCooldown(nil, name)
